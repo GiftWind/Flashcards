@@ -1,0 +1,83 @@
+# Project exclude paths
+/.gradle/
+/Flashcards/task/build/
+/Flashcards/task/out/
+/Flashcards/task/out/production/classes/
+/Problems/Adding values/out/
+/Problems/Adding values/out/production/classes/
+/Problems/Calculating factorials/out/
+/Problems/Calculating factorials/out/production/classes/
+/Problems/Catching some exceptions/out/
+/Problems/Catching some exceptions/out/production/classes/
+/Problems/Check if an array is sorted ascending/out/
+/Problems/Check if an array is sorted ascending/out/production/classes/
+/Problems/Composite numbers/out/
+/Problems/Composite numbers/out/production/classes/
+/Problems/Converting and multiplying/out/
+/Problems/Converting and multiplying/out/production/classes/
+/Problems/Counting words/out/
+/Problems/Counting words/out/production/classes/
+/Problems/Creating a set/out/
+/Problems/Creating a set/out/production/classes/
+/Problems/Displaying pairs/out/
+/Problems/Displaying pairs/out/production/classes/
+/Problems/Find mistake/out/
+/Problems/Find mistake/out/production/classes/
+/Problems/Find the nearest number/out/
+/Problems/Find the nearest number/out/production/classes/
+/Problems/Find the seed/out/
+/Problems/Find the seed/out/production/classes/
+/Problems/Gaussian random numbers/out/
+/Problems/Gaussian random numbers/out/production/classes/
+/Problems/Generate random numbers/out/
+/Problems/Generate random numbers/out/production/classes/
+/Problems/Getting input/out/
+/Problems/Getting input/out/production/classes/
+/Problems/Getting submaps/out/
+/Problems/Getting submaps/out/production/classes/
+/Problems/Inverse boolean flags/out/
+/Problems/Inverse boolean flags/out/production/classes/
+/Problems/Kidnapper of Ice cream/out/
+/Problems/Kidnapper of Ice cream/out/production/classes/
+/Problems/Modifying a map/out/
+/Problems/Modifying a map/out/production/classes/
+/Problems/Output elements/out/
+/Problems/Output elements/out/production/classes/
+/Problems/Preparing full name/out/
+/Problems/Preparing full name/out/production/classes/
+/Problems/Print/out/
+/Problems/Print/out/production/classes/
+/Problems/Project constants and methods/out/
+/Problems/Project constants and methods/out/production/classes/
+/Problems/Removing duplicates and sorting/out/
+/Problems/Removing duplicates and sorting/out/production/classes/
+/Problems/Removing elements/out/
+/Problems/Removing elements/out/production/classes/
+/Problems/Right Rotation/out/
+/Problems/Right Rotation/out/production/classes/
+/Problems/Sherlock Holmes and removing of characters/out/
+/Problems/Sherlock Holmes and removing of characters/out/production/classes/
+/Problems/Sherlock Holmes and the mystery of anagrams/out/
+/Problems/Sherlock Holmes and the mystery of anagrams/out/production/classes/
+/Problems/Spell checker/out/
+/Problems/Spell checker/out/production/classes/
+/Problems/Squares of natural numbers/out/
+/Problems/Squares of natural numbers/out/production/classes/
+/Problems/Strict superset/out/
+/Problems/Strict superset/out/production/classes/
+/Problems/Substitution cipher/out/
+/Problems/Substitution cipher/out/production/classes/
+/Problems/Symmetric difference/out/
+/Problems/Symmetric difference/out/production/classes/
+/Problems/The index of the first max in an array/out/
+/Problems/The index of the first max in an array/out/production/classes/
+/Problems/The largest element of a sequence/out/
+/Problems/The largest element of a sequence/out/production/classes/
+/Problems/The sign of a number/out/
+/Problems/The sign of a number/out/production/classes/
+/Problems/The sum of array elements/out/
+/Problems/The sum of array elements/out/production/classes/
+/Problems/Tricky sub-maps/out/
+/Problems/Tricky sub-maps/out/production/classes/
+/Problems/War and Peace/out/
+/Problems/War and Peace/out/production/classes/

@@ -1,0 +1,523 @@
+type: edu
+custom_name: stage4
+files:
+- name: test/common/DialogClue.kt
+  visible: false
+  text: |
+    package common
+
+    import org.hyperskill.hstest.testcase.CheckResult
+    import org.hyperskill.hstest.testcase.TestCase
+
+
+    // ---- DialogClue ----
+
+    /** May be several lines or just one. */
+    interface Phrase {
+        fun toPhraseLines(): List<PhraseLine>
+    }
+
+    /** list of input and output lines, combined together. */
+    fun compositePhrase(block: () -> List<Phrase>) = object : Phrase {
+        override fun toPhraseLines() = block().flatMap { it.toPhraseLines() }
+    }
+
+    fun compositePhrase(vararg phrases: Phrase) = object : Phrase {
+        override fun toPhraseLines() = phrases.flatMap { it.toPhraseLines() }
+    }
+
+    /** Either user (input) or output phrase. Each phrase should be a line. */
+    sealed class PhraseLine : Phrase {
+        override fun toPhraseLines() = listOf(this)
+    }
+
+    /** Some mutable data, that is passed across dialog phrases. */
+    class Context {
+        val rawData = mutableMapOf<String, Any>()
+    }
+
+    class UserLine(val text: String, val updateContext: CtxUpdate = {}) : PhraseLine() {
+
+    }
+    typealias CtxUpdate = (ctx: Context) -> Unit
+
+    class OutputLine(val checker: (text: String, ctx: Context) -> CheckResult) : PhraseLine()
+
+    /** This function creates a line with user input (our test input).
+     *
+     * Unfortunately we can't access the Context, when we adding user text.
+     * This occurs because of HS test framework limitations:
+     * we need to pass all inputs first, and then start checking outputs. */
+    fun user(text: String, updateContext: (ctx: Context) -> Unit = {}) = UserLine(text, updateContext)
+
+    fun anyLine() = OutputLine { _, _ -> CheckResult.correct(); }
+
+    fun containing(
+            vararg parts: String,
+            ignoreCase: Boolean = true,
+            hint: String? = null,
+            updateContext: CtxUpdate = {}
+    ) = OutputLine { line, context ->
+        fun buildFeedback(): String {
+            val feedback = StringBuilder()
+            feedback.append("Your line\n`$line`\nshould contain ${parts.joinToString("`, `", "`", "`")}")
+            if (ignoreCase) {
+                feedback.append(" (ignoring case)")
+            }
+            feedback.append(".")
+            if (hint != null) {
+                feedback.append("\n$hint")
+            }
+            return feedback.toString()
+        }
+
+        var startIndex = 0
+        for (part in parts) {
+            startIndex = line.indexOf(part, startIndex, ignoreCase)
+            if (startIndex == -1) {
+                return@OutputLine CheckResult.wrong(buildFeedback())
+            }
+        }
+        updateContext(context) // everything is correct, update context
+        CheckResult.correct();
+    }
+
+    class DialogClue(private val phrases: List<PhraseLine>) {
+
+        private val inputPhrases = phrases.filter { it is UserLine }.map { it as UserLine }
+        private val outputPhrases = phrases.filter { it is OutputLine }.map { it as OutputLine }
+
+        fun generateInput() = inputPhrases
+                .joinToString("\n", postfix = "\n") { it.text }
+
+        fun checkOutput(output: String): CheckResult {
+            val lines = output.lines()
+                    .filter { it.isNotBlank() }
+
+            fun wrongOutputSizeFeedback(): CheckResult
+                    = CheckResult.wrong("The number of lines in your output is ${lines.size}, " +
+                    "but it should be ${outputPhrases.size}. " +
+                    "Check, that you output your lines with println, not print. And there are no extra outputs.")
+
+    // here we store some mutable data from phrase to phrase
+            val context = Context()
+
+            val lineIter = lines.listIterator()
+            phrases.forEach { phraseLine ->
+                when (phraseLine) {
+                    is UserLine -> phraseLine.updateContext(context)
+                    is OutputLine -> {
+                        if (!lineIter.hasNext()) {
+                            return wrongOutputSizeFeedback()
+                        }
+                        val result = phraseLine.checker(lineIter.next(), context)
+                        if (!result.isCorrect) {
+                            return CheckResult.wrong(result.feedback)
+                        }
+                    }
+                }
+            }
+
+            if (lineIter.hasNext()) {
+                return wrongOutputSizeFeedback()
+            }
+
+            return CheckResult.correct()
+        }
+    }
+
+    fun dialogTest(vararg phrases: Phrase): TestCase<DialogClue> {
+        val dialogClue = DialogClue(phrases.flatMap { it.toPhraseLines() })
+        return TestCase<DialogClue>()
+                .setInput(dialogClue.generateInput())
+                .setAttach(dialogClue)
+    }
+  learner_created: false
+- name: test/common/FlashcardsStage4Test.kt
+  visible: false
+  text: |
+    package common
+
+    import flashcards.Main
+    import org.hyperskill.hstest.stage.StageTest
+    import org.hyperskill.hstest.testcase.CheckResult
+
+    abstract class FlashcardsStage4Test : StageTest<DialogClue>(Main::class.java) {
+
+        override fun generate() = listOf(
+                dialogTest(
+                        anyLine(), user("2"),
+                        anyLine(), user("black"),
+                        anyLine(), user("white"),
+                        anyLine(), user("black"),
+                        containing("The card \"black\" already exists"),
+                        user("red"),
+                        anyLine(), user("white"),
+                        containing("The definition \"white\" already exists"),
+                        user("green"),
+                        // asking
+                        askCorrect("black", "white"),
+                        askCorrect("red", "green")
+                ),
+                dialogTest(
+                        inputNum(2),
+                        inputCard("a brother of one's parent", "uncle"),
+                        inputCard("a part of the body where the foot and the leg meet", "ankle"),
+                        // asking
+                        askWrong("a brother of one's parent", userAns = "ankle", rightAns = "uncle",
+                                isDefFor = "a part of the body where the foot and the leg meet"),
+
+                        askWrong("a part of the body where the foot and the leg meet", "???", "ankle")
+                ),
+                dialogTest(
+                        inputNum(4),
+                        inputCard("c1", "d1"),
+                        inputCard("c2", "d2"),
+                        inputCard("c3", "d3"),
+                        // repeating three times
+                        anyLine(),
+                        user("c3"), containing("The card \"c3\" already exists"),
+                        user("c2"), containing("The card \"c2\" already exists"),
+                        user("c1"), containing("The card \"c1\" already exists"),
+                        user("c4"),
+                        anyLine(),
+                        user("d2"), containing("The definition \"d2\" already exists"),
+                        user("d3"), containing("The definition \"d3\" already exists"),
+                        user("d1"), containing("The definition \"d1\" already exists"),
+                        user("d4"),
+
+                        askCorrect("c1", "d1"),
+                        askWrong("c2", userAns = "d1", rightAns = "d2", isDefFor = "c1"),
+                        askWrong("c3", "d3 ddd3", "d3"),
+                        askWrong("c4", "???", "d4")
+                )
+        )
+
+        /** Asks with a correct answer. */
+        private fun askCorrect(quest: String, userAns: String) = compositePhrase {
+            listOf(containing("\"$quest\"", hint = "This line should ask the definition of `$quest`."),
+                    user(userAns), containing("Correct!"))
+        }
+
+        /** Asks with a wrong answer. */
+        private fun askWrong(quest: String, userAns: String, rightAns: String, isDefFor: String? = null) = compositePhrase {
+            val result = mutableListOf(
+                    containing("\"$quest\"", hint = "This line should ask the definition of `$quest`."),
+                    user(userAns))
+            if (isDefFor == null) {
+                result += containing("Wrong", "The right answer is \"$rightAns\"")
+            } else {
+                result += containing("Wrong", "The right answer is \"$rightAns\"",
+                        "but your definition is correct for \"$isDefFor\"")
+            }
+            result
+        }
+
+        private fun inputNum(number: Int) = compositePhrase {
+            listOf(anyLine(), user(number.toString()))
+        }
+
+        private fun inputCard(card: String, def: String) = compositePhrase {
+            listOf(anyLine(), user(card), anyLine(), user(def))
+        }
+
+
+        override fun check(reply: String, clue: DialogClue): CheckResult {
+            return clue.checkOutput(reply)
+        }
+    }
+  learner_created: false
+- name: test/FlashcardsTest.java
+  visible: false
+  text: |
+    import common.FlashcardsStage4Test;
+
+    public class FlashcardsTest extends FlashcardsStage4Test {
+        // just empty class, but not abstract so it can be run
+    }
+  learner_created: false
+- name: src/flashcards/Main.java
+  visible: true
+  text: |
+    package flashcards;
+
+    public class Main {
+        public static void main(String[] args) {
+            System.out.println("Hello World!");
+        }
+    }
+  learner_created: false
+- name: test/common/FlashcardsStage2Test.kt
+  visible: true
+  text: |+
+    package common
+
+    import flashcards.Main
+
+    import org.hyperskill.hstest.stage.StageTest
+    import org.hyperskill.hstest.testcase.CheckResult
+    import org.hyperskill.hstest.testcase.TestCase
+    import common.FlashcardsStage2Answer.RIGHT
+    import common.FlashcardsStage2Answer.WRONG
+
+    data class FlashcardsStage2Clue(
+            val consoleInput: String,
+            val answer: FlashcardsStage2Answer,
+            val revealTest: Boolean = false
+    )
+
+    enum class FlashcardsStage2Answer(val word: String) {
+        RIGHT("right"),
+        WRONG("wrong");
+    }
+
+    abstract class FlashcardsStage2Test : StageTest<FlashcardsStage2Clue>(Main::class.java) {
+
+        override fun generate(): List<TestCase<FlashcardsStage2Clue>> {
+            return listOf(
+                    createTestCase("a purring animal\ncat\ncat\n", RIGHT, true),
+                    createTestCase("a purring animal\ncat\n????\n", WRONG, true),
+                    createTestCase("a barking animal\ndog\ncat\n", WRONG),
+                    createTestCase("a barking animal\ndog\ndog\n", RIGHT)
+            )
+        }
+
+        override fun check(reply: String, clue: FlashcardsStage2Clue): CheckResult {
+            val words = reply.lowerWords()
+
+            val hasRight = RIGHT.word.toLowerCase() in words
+            val hasWrong = WRONG.word.toLowerCase() in words
+
+            if ((hasRight || !hasWrong) && clue.answer == WRONG) {
+                return if (clue.revealTest) {
+                    CheckResult(
+                            false,
+                            revealRawTest(clue.consoleInput, reply) + "Expected the \"${WRONG.word}\" word."
+                    )
+                } else {
+                    CheckResult(false)
+                }
+            }
+
+            if ((hasWrong || !hasRight) && clue.answer == RIGHT) {
+                return if (clue.revealTest) {
+                    CheckResult(
+                            false,
+                            revealRawTest(clue.consoleInput, reply) + "Expected the \"${RIGHT.word}\" word."
+                    )
+                } else {
+                    CheckResult(false)
+                }
+            }
+
+            return CheckResult(true)
+        }
+
+        companion object {
+            private fun createTestCase(
+                    consoleInput: String,
+                    answer: FlashcardsStage2Answer,
+                    revealTest: Boolean = false
+            ): TestCase<FlashcardsStage2Clue> {
+                return TestCase<FlashcardsStage2Clue>()
+                        .setInput(consoleInput)
+                        .setAttach(FlashcardsStage2Clue(consoleInput, answer, revealTest))
+            }
+        }
+    }
+
+    fun revealRawTest(consoleInput: String, reply: String): String {
+        return "Input:\n$consoleInput\nYour output:\n$reply\n\n"
+    }
+
+    fun String.lowerWords(): Set<String> {
+        val lowerReply = this.trim().toLowerCase()
+
+        val onlyLetters = lowerReply.map { if (it.isLetter()) it else ' ' }.joinToString("")
+
+        return onlyLetters.split(" ").filter { it.isNotEmpty() }.toSet()
+    }
+
+
+  learner_created: false
+- name: test/common/FlashcardsStage3Test.kt
+  visible: false
+  text: |
+    package common
+
+
+    import org.hyperskill.hstest.stage.StageTest
+    import org.hyperskill.hstest.testcase.CheckResult
+    import org.hyperskill.hstest.testcase.TestCase
+    import flashcards.Main
+
+    class CardsClue(
+            val cardCount: Int,
+            val cards: List<String>,
+            val defs: List<String>,
+            val answers: List<String>
+    ) {
+        init {
+            require(cardCount == cards.size)
+            require(cards.size == defs.size)
+            require(defs.size == answers.size)
+        }
+
+        fun makeText() = listOf(
+                listOf(cardCount.toString()),
+                cards.zip(defs).flatMap { (c, d) -> listOf(c, d) },
+                answers
+        )
+                .flatten()
+                .joinToString("\n", postfix = "\n")
+    }
+
+    abstract class FlashcardsStage3Test : StageTest<CardsClue>(Main::class.java) {
+
+        override fun generate() = listOf(
+                CardsClue(2,
+                        cards = listOf("black", "white"),
+                        defs = listOf("white", "black"),
+                        answers = listOf("white", "blue")
+                ),
+                CardsClue(5,
+                        cards = listOf("a", "2", "3", "4", "5"),
+                        defs = listOf("a", "2", "3", "4", "5"),
+                        answers = listOf("a", "2", "3", "4", "5")
+                ),
+                CardsClue(5,
+                        cards = listOf("1", "2", "3", "4", "5"),
+                        defs = listOf("1", "2", "3", "4", "5"),
+                        answers = listOf("5", "4", "3", "2", "1")
+                ),
+                CardsClue(4,
+                        cards = listOf("11", "12", "13", "14"),
+                        defs = listOf("21", "22", "23", "24"),
+                        answers = listOf("21", "22", "333333", "34")
+                ),
+                CardsClue(2,
+                        cards = listOf("a brother of one's parent", "a part of the body where the foot and the leg meet"),
+                        defs = listOf("uncle", "ankle"),
+                        answers = listOf("ankle", "??")
+                )
+
+        ).map { clue ->
+            TestCase<CardsClue>()
+                    .setInput(clue.makeText())
+                    .setAttach(clue)
+        }
+
+        override fun check(reply: String, clue: CardsClue): CheckResult {
+            val userLines = reply.lines().filter { it.isNotEmpty() }
+
+
+            if (userLines.size < clue.cardCount * 2) {
+                return CheckResult.wrong("Your output should contain at least ${clue.cardCount * 2} lines, but contains only ${userLines.size}. " +
+                        "Check, that you output your lines with println, not print.")
+            }
+
+            val askLines = userLines.takeLast(clue.cardCount * 2)
+            println("askLines:\n${askLines.joinToString("\n")}")
+
+
+            val questToAns = askLines.windowed(2, 2)
+            for (i in 0 until clue.cardCount) {
+                val (quest, feedback) = questToAns[i]
+                val card = clue.cards[i]
+                val def = clue.defs[i]
+                val ans = clue.answers[i] // user answer
+
+                if (!quest.contains("\"$card\"")) {
+                    return CheckResult.wrong("Question \"$quest\" should contain the card \"$card\" in quotes.")
+                }
+
+                if (ans == def) {
+                    // should be correct
+                    if (!feedback.toLowerCase().contains("correct answer")) {
+                        return CheckResult.wrong("Feedback \"$feedback\" should be positive for card \"$card\" and answer \"$ans\".")
+                    }
+                } else {
+                    // should be wrong
+                    if (!feedback.toLowerCase().contains("wrong answer") || !feedback.contains("\"$def\"")) {
+                        return CheckResult.wrong("Feedback \"$feedback\" should be negative for the card \"$card\" " +
+                                "and contain the right definition \"$def\" in quotes.")
+                    }
+                }
+
+            }
+
+            return CheckResult.correct()
+        }
+    }
+  learner_created: false
+- name: test/common/FlashcardsStage1Test.kt
+  visible: false
+  text: |
+    package common
+
+    import flashcards.Main
+    import org.hyperskill.hstest.stage.StageTest
+    import org.hyperskill.hstest.testcase.CheckResult
+    import org.hyperskill.hstest.testcase.TestCase
+
+    abstract class FlashcardsStage1Test : StageTest<Nothing?>(Main::class.java) {
+
+        override fun generate(): List<TestCase<Nothing?>> {
+            return listOf(
+                    TestCase()
+            )
+        }
+
+        override fun check(reply: String, clue: Nothing?): CheckResult {
+            val lines = reply.lines().filter { it.isNotEmpty() }
+
+            if (lines.size != LINE_COUNT) {
+                return CheckResult(
+                        false,
+                        "Your program prints ${lines.size} ${lineOrLines(lines.size)}.\n" +
+                                "$LINE_COUNT lines were expected."
+                )
+            }
+
+            val firstLine = lines[0].trim()
+
+            if (firstLine != FIRST_LINE) {
+                return CheckResult(
+                        false,
+                        "Your first line is \"$firstLine\" but \"$FIRST_LINE\" was expected."
+                )
+            }
+
+            val thirdLine = lines[2].trim()
+
+            if (thirdLine != THIRD_LINE) {
+                return CheckResult(
+                        false,
+                        "Your third line is \"$thirdLine\" but \"$THIRD_LINE\" was expected."
+                )
+            }
+
+            return CheckResult(true)
+        }
+
+        private fun lineOrLines(lineCount: Int): String {
+            if (lineCount == 1) {
+                return "line"
+            }
+            return "lines"
+        }
+
+        companion object {
+            private const val LINE_COUNT = 4
+            private const val FIRST_LINE = "Card:"
+            private const val THIRD_LINE = "Definition:"
+        }
+    }
+  learner_created: false
+feedback_link: https://hyperskill.org/projects/44/stages/235/implement
+status: Solved
+feedback:
+  message: Congratulations! Continue on <a href="https://hyperskill.org/projects/44/stages/235/implement">JetBrains
+    Academy</a>
+  time: Thu, 13 Aug 2020 09:42:06 UTC
+record: 1

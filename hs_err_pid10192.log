@@ -1,0 +1,185 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 1048576 bytes for AllocateHeap
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   The process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (c:/BuildAgent/work/5ff2f6c26000d570/src/hotspot/share/memory/allocation.cpp:46), pid=10192, tid=1752
+#
+# JRE version:  (11.0.5+10) (build )
+# Java VM: OpenJDK 64-Bit Server VM (11.0.5+10-b520.38, mixed mode, aot, sharing, tiered, compressed oops, g1 gc, windows-amd64)
+# No core dump will be written. Minidumps are not enabled by default on client versions of Windows
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -Djava.awt.headless=true -Djava.rmi.server.hostname=127.0.0.1 -Xmx512m -Dkotlin.environment.keepalive org.jetbrains.kotlin.daemon.KotlinCompileDaemon --daemon-runFilesPath C:\Users\Mark\AppData\Local\kotlin\daemon --daemon-autoshutdownIdleSeconds=7200 --daemon-compilerClasspath C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-compiler-embeddable\1.3.21\677cc9553b8964c895abc76da9b6a0faea8f671d\kotlin-compiler-embeddable-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-reflect\1.3.21\d0d5ff2ac2ebd8a42697af41e20fc225a23c5d3b\kotlin-reflect-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib\1.3.21\4bcc2012b84840e19e1e28074284cac908be0295\kotlin-stdlib-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-script-runtime\1.3.21\29363d474ee6fda354900636320a177c7286def9\kotlin-script-runtime-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.intellij.deps\trove4j\1.0.20181211\216c2e14b070f334479d800987affe4054cd563f\trove4j-1.0.20181211.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib-common\1.3.21\f30e4a9897913e53d778f564110bafa1fef46643\kotlin-stdlib-common-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains\annotations\13.0\919f0dfe192fb4e063e7dacadee7f8bb9a2672a9\annotations-13.0.jar
+
+Host: Intel(R) Core(TM) i5-4300M CPU @ 2.60GHz, 4 cores, 11G,  Windows 10 , 64 bit Build 19041 (10.0.19041.1)
+Time: Fri Apr 10 03:45:29 2020 Russia TZ 2 Standard Time elapsed time: 0 seconds (0d 0h 0m 0s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x000001fd3009b800):  JavaThread "Unknown thread" [_thread_in_vm, id=1752, stack(0x0000009b64c00000,0x0000009b64d00000)]
+
+Stack: [0x0000009b64c00000,0x0000009b64d00000]
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x5dcafa]
+V  [jvm.dll+0x70e375]
+V  [jvm.dll+0x70f898]
+V  [jvm.dll+0x70ff63]
+V  [jvm.dll+0x23e238]
+V  [jvm.dll+0xb0344]
+V  [jvm.dll+0x2dd632]
+V  [jvm.dll+0x2d66aa]
+V  [jvm.dll+0x6ed237]
+V  [jvm.dll+0x6eea2c]
+V  [jvm.dll+0x355849]
+V  [jvm.dll+0x6d239e]
+V  [jvm.dll+0x3be283]
+V  [jvm.dll+0x3c0701]
+C  [jli.dll+0x5363]
+C  [ucrtbase.dll+0x21542]
+C  [KERNEL32.DLL+0x16fd4]
+C  [ntdll.dll+0x4cf31]
+
+
+---------------  P R O C E S S  ---------------
+
+Threads class SMR info:
+_java_thread_list=0x000001fd2df34590, length=0, elements={
+}
+
+Java Threads: ( => current thread )
+
+Other Threads:
+  0x000001fd300b4000 GCTaskThread "GC Thread#0" [stack: 0x0000009b64d00000,0x0000009b64e00000] [id=15548]
+
+[error occurred during error reporting (printing all threads), id 0xc0000005, EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x00007ffe71292990]
+
+VM state:not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x000001fd30095fd0] Heap_lock - owner thread: 0x000001fd3009b800
+
+Heap address: 0x00000000e0000000, size: 512 MB, Compressed Oops mode: Non-zero based: 0x00000000e0000000
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 0
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Classes redefined (0 events):
+No events
+
+Internal exceptions (0 events):
+No events
+
+Events (0 events):
+No events
+
+
+Dynamic libraries:
+0x00007ff6ec1f0000 - 0x00007ff6ec1fa000 	C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2019.3.3\jbr\bin\java.exe
+0x00007ffec11b0000 - 0x00007ffec13a4000 	C:\WINDOWS\SYSTEM32\ntdll.dll
+0x00007ffec09a0000 - 0x00007ffec0a5d000 	C:\WINDOWS\System32\KERNEL32.DLL
+0x00007ffebebe0000 - 0x00007ffebeea7000 	C:\WINDOWS\System32\KERNELBASE.dll
+0x00007ffebe8f0000 - 0x00007ffebe9f0000 	C:\WINDOWS\System32\ucrtbase.dll
+0x00007ffea5830000 - 0x00007ffea5849000 	C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2019.3.3\jbr\bin\jli.dll
+0x00007ffec0720000 - 0x00007ffec08c0000 	C:\WINDOWS\System32\USER32.dll
+0x00007ffebf050000 - 0x00007ffebf072000 	C:\WINDOWS\System32\win32u.dll
+0x00007ffec0ae0000 - 0x00007ffec0b0a000 	C:\WINDOWS\System32\GDI32.dll
+0x00007ffebf080000 - 0x00007ffebf18a000 	C:\WINDOWS\System32\gdi32full.dll
+0x00007ffebefb0000 - 0x00007ffebf04d000 	C:\WINDOWS\System32\msvcp_win.dll
+0x00007ffea18d0000 - 0x00007ffea18e7000 	C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2019.3.3\jbr\bin\VCRUNTIME140.dll
+0x00007ffea5920000 - 0x00007ffea5bba000 	C:\WINDOWS\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.19041.1_none_b555e41d4684ddec\COMCTL32.dll
+0x00007ffec10d0000 - 0x00007ffec116e000 	C:\WINDOWS\System32\msvcrt.dll
+0x00007ffec0b10000 - 0x00007ffec0b40000 	C:\WINDOWS\System32\IMM32.DLL
+0x00007ffe909e0000 - 0x00007ffe90a7d000 	C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2019.3.3\jbr\bin\msvcp140.dll
+0x00007ffe70fb0000 - 0x00007ffe71a6b000 	C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2019.3.3\jbr\bin\server\jvm.dll
+0x00007ffebf580000 - 0x00007ffebf62a000 	C:\WINDOWS\System32\ADVAPI32.dll
+0x00007ffebf4e0000 - 0x00007ffebf57b000 	C:\WINDOWS\System32\sechost.dll
+0x00007ffec05f0000 - 0x00007ffec0713000 	C:\WINDOWS\System32\RPCRT4.dll
+0x00007ffec0050000 - 0x00007ffec0058000 	C:\WINDOWS\System32\PSAPI.DLL
+0x00007ffea6dc0000 - 0x00007ffea6dc9000 	C:\WINDOWS\SYSTEM32\WSOCK32.dll
+0x00007ffec1050000 - 0x00007ffec10bb000 	C:\WINDOWS\System32\WS2_32.dll
+0x00007ffe99030000 - 0x00007ffe99057000 	C:\WINDOWS\SYSTEM32\WINMM.dll
+0x00007ffeaf440000 - 0x00007ffeaf44a000 	C:\WINDOWS\SYSTEM32\VERSION.dll
+0x00007ffebc760000 - 0x00007ffebc773000 	C:\WINDOWS\SYSTEM32\kernel.appcore.dll
+0x00007ffeadac0000 - 0x00007ffeadad1000 	C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2019.3.3\jbr\bin\verify.dll
+0x00007ffea83d0000 - 0x00007ffea85b4000 	C:\WINDOWS\SYSTEM32\DBGHELP.DLL
+0x00007ffea8370000 - 0x00007ffea839c000 	C:\WINDOWS\SYSTEM32\dbgcore.DLL
+0x00007ffebf190000 - 0x00007ffebf20f000 	C:\WINDOWS\System32\bcryptPrimitives.dll
+0x00007ffea1970000 - 0x00007ffea1999000 	C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2019.3.3\jbr\bin\java.dll
+0x00007ffea20d0000 - 0x00007ffea20e7000 	C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2019.3.3\jbr\bin\zip.dll
+0x00007ffeb6d80000 - 0x00007ffeb6d8b000 	C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2019.3.3\jbr\bin\jimage.dll
+
+dbghelp: loaded successfully - version: 4.0.5 - missing functions: none
+symbol engine: initialized successfully - sym options: 0x614 - pdb path: .;C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2019.3.3\jbr\bin;C:\WINDOWS\SYSTEM32;C:\WINDOWS\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.19041.1_none_b555e41d4684ddec;C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2019.3.3\jbr\bin\server
+
+VM Arguments:
+jvm_args: -Djava.awt.headless=true -Djava.rmi.server.hostname=127.0.0.1 -Xmx512m -Dkotlin.environment.keepalive 
+java_command: org.jetbrains.kotlin.daemon.KotlinCompileDaemon --daemon-runFilesPath C:\Users\Mark\AppData\Local\kotlin\daemon --daemon-autoshutdownIdleSeconds=7200 --daemon-compilerClasspath C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-compiler-embeddable\1.3.21\677cc9553b8964c895abc76da9b6a0faea8f671d\kotlin-compiler-embeddable-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-reflect\1.3.21\d0d5ff2ac2ebd8a42697af41e20fc225a23c5d3b\kotlin-reflect-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib\1.3.21\4bcc2012b84840e19e1e28074284cac908be0295\kotlin-stdlib-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-script-runtime\1.3.21\29363d474ee6fda354900636320a177c7286def9\kotlin-script-runtime-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.intellij.deps\trove4j\1.0.20181211\216c2e14b070f334479d800987affe4054cd563f\trove4j-1.0.20181211.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib-common\1.3.21\f30e4a9897913e53d778f564110bafa1fef46643\kotlin-stdlib-common-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains\annotations\13.0\919f0dfe192fb4e063e7dacadee7f8bb9a2672a9\annotations-13.0.jar
+java_class_path (initial): C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-compiler-embeddable\1.3.21\677cc9553b8964c895abc76da9b6a0faea8f671d\kotlin-compiler-embeddable-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-reflect\1.3.21\d0d5ff2ac2ebd8a42697af41e20fc225a23c5d3b\kotlin-reflect-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib\1.3.21\4bcc2012b84840e19e1e28074284cac908be0295\kotlin-stdlib-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-script-runtime\1.3.21\29363d474ee6fda354900636320a177c7286def9\kotlin-script-runtime-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.intellij.deps\trove4j\1.0.20181211\216c2e14b070f334479d800987affe4054cd563f\trove4j-1.0.20181211.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains.kotlin\kotlin-stdlib-common\1.3.21\f30e4a9897913e53d778f564110bafa1fef46643\kotlin-stdlib-common-1.3.21.jar;C:\Users\Mark\.gradle\caches\modules-2\files-2.1\org.jetbrains\annotations\13.0\919f0dfe192fb4e063e7dacadee7f8bb9a2672a9\annotations-13.0.jar
+Launcher Type: SUN_STANDARD
+
+[Global flags]
+     intx CICompilerCount                          = 3                                         {product} {ergonomic}
+     uint ConcGCThreads                            = 1                                         {product} {ergonomic}
+     uint G1ConcRefinementThreads                  = 4                                         {product} {ergonomic}
+   size_t G1HeapRegionSize                         = 1048576                                   {product} {ergonomic}
+    uintx GCDrainStackTargetSize                   = 64                                        {product} {ergonomic}
+   size_t InitialHeapSize                          = 201326592                                 {product} {ergonomic}
+   size_t MarkStackSize                            = 4194304                                   {product} {ergonomic}
+   size_t MaxHeapSize                              = 536870912                                 {product} {command line}
+   size_t MinHeapDeltaBytes                        = 1048576                                   {product} {ergonomic}
+    uintx NonNMethodCodeHeapSize                   = 5830732                                {pd product} {ergonomic}
+    uintx NonProfiledCodeHeapSize                  = 122913754                              {pd product} {ergonomic}
+    uintx ProfiledCodeHeapSize                     = 122913754                              {pd product} {ergonomic}
+    uintx ReservedCodeCacheSize                    = 251658240                              {pd product} {ergonomic}
+     bool SegmentedCodeCache                       = true                                      {product} {ergonomic}
+     bool UseCompressedClassPointers               = true                                 {lp64_product} {ergonomic}
+     bool UseCompressedOops                        = true                                 {lp64_product} {ergonomic}
+     bool UseG1GC                                  = true                                      {product} {ergonomic}
+     bool UseLargePagesIndividualAllocation        = false                                  {pd product} {ergonomic}
+
+Logging:
+Log output configuration:
+ #0: stdout all=warning uptime,level,tags
+ #1: stderr all=off uptime,level,tags
+
+Environment Variables:
+PATH=C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft VS Code\bin;C:\Program Files (x86)\Graphviz2.38\bin;C:\Program Files\Git\cmd;C:\Program Files\dotnet\;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\ProgramData\chocolatey\lib\Elixir/bin;C:\Program Files (x86)\Yarn\bin\;C:\Go\bin;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Java\jdk-14\bin;C:\Program Files\PuTTY\;C:\Program Files\MySQL\MySQL Server 8.0\bin;;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\Mark\AppData\Local\Programs\Python\Python37-32\Scripts\;C:\Users\Mark\AppData\Local\Programs\Python\Python37-32\;C:\Users\Mark\AppData\Local\Microsoft\WindowsApps;C:\Program Files (x86)\Graphviz2.38\bin;C:\Users\Mark\.dotnet\tools;C:\Users\Mark\AppData\Roaming\npm;C:\Users\Mark\AppData\Local\GitHubDesktop\bin;C:\Users\Mark\AppData\Local\Yarn\bin;C:\Users\Mark\go\bin;C:\Users\Mark\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Java\jdk-14\bin;C:\Program Files\JetBrains\IntelliJ IDEA Educational Edition 2019.3.3\bin;;C:\Program Files\MySQL\MySQL Server 8.0\bin;
+USERNAME=Mark
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 60 Stepping 3, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 10 , 64 bit Build 19041 (10.0.19041.1)
+HyperV virtualization detected
+
+CPU:total 4 (initial active 4) (2 cores per cpu, 2 threads per core) family 6 model 60 stepping 3, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, avx2, aes, clmul, erms, lzcnt, ht, tsc, tscinvbit, bmi1, bmi2, fma
+
+Memory: 4k page, system-wide physical 12193M (1234M free)
+TotalPageFile size 14613M (AvailPageFile size 5M)
+current process WorkingSet (physical memory assigned to process): 9M, peak: 9M
+current process commit charge ("private bytes"): 48M, peak: 49M
+
+vm_info: OpenJDK 64-Bit Server VM (11.0.5+10-b520.38) for windows-amd64 JRE (11.0.5+10-b520.38), built on Jan 23 2020 07:58:32 by "" with MS VC++ 14.0 (VS2015)
+
+END.
